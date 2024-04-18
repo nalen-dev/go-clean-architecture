@@ -1,11 +1,13 @@
 package rest
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/gin-gonic/gin"
+)
 
-func LoadRoutes(e *echo.Echo, handler *handler){
+func LoadRoutes(e *gin.Engine, handler *handler){
 	// TODO: add auth midleware
 
 	userGroup :=  e.Group("/user")
-	userGroup.POST("/login",handler.Login)
+	userGroup.POST("/login", handler.Login)
 
 }

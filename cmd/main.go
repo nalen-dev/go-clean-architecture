@@ -8,8 +8,8 @@ import (
 	uUsecase "go-clean-architecture/internal/usecase/user"
 	"log"
 
+	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/labstack/echo/v4"
 )
 
 const dbURL = "postgresql://postgres:password@localhost:5432/be_test"
@@ -27,13 +27,13 @@ func main(){
 
 	store := database.NewStore(conn)
 
-	e := echo.New()
+	r := gin.Default()
 
 	userRepo := uRep.NewRepo(&store)
 	userUseCase := uUsecase.GetUseCase(userRepo)
 
 	handler := rest.NewHandler(userUseCase)
-	rest.LoadRoutes(e, handler)
+	rest.LoadRoutes(r, handler)
 
-	e.Logger.Fatal(e.Start(":8080"))
+	r.Run(":8080")
 }

@@ -5,29 +5,32 @@ import (
 	"go-clean-architecture/internal/model"
 	"net/http"
 
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 )
 
-func(h *handler) Login(c echo.Context) error {
+func(h *handler) Login(c *gin.Context) {
 
 	var request model.UserCredentials
-	err := json.NewDecoder(c.Request().Body).Decode(&request)
+	err := json.NewDecoder(c.Request.Body).Decode(&request)
 
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]interface{}{
+		 c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"error": err.Error(),
 		})
+		return
 	}
 
-	userSession, err := h.userUsecase.Login(c.Request().Context(), request)
+	userSession, err := h.userUsecase.Login(c.Request.Context(), request)
 	
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+		c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
 		})
+		return
 	}
 
-	return c.JSON(http.StatusOK, map[string]interface{}{
+	 c.JSON(http.StatusOK, map[string]interface{}{
 		"data": userSession,
 	})
+	return
 }
